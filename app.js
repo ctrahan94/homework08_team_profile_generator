@@ -10,26 +10,143 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const employees = [];
 
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
+function createManager() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the managers name?",
+        name: "managerName",
+      },
+      {
+        type: "input",
+        message: "What is the managers id number?",
+        name: "managerId",
+      },
+      {
+        type: "input",
+        message: "What is the managers email address?",
+        name: "managerEmail",
+      },
+      {
+        type: "input",
+        message: "What is the managers office number?",
+        name: "managerOfficeNumber",
+      },
+    ])
+    .then((data) => {
+      var newManager = new Manager(
+        data.managerName,
+        data.managerId,
+        data.managerEmail,
+        data.managerOfficeNumber
+      );
+      employees.push(newManager);
+      createTeam();
+    });
+}
 
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
+function createEngineer() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is your engineers name?",
+        name: "engineerName",
+      },
+      {
+        type: "input",
+        message: "What is your engineers id number?",
+        name: "engineerId",
+      },
+      {
+        type: "input",
+        message: "What is your engineers email address?",
+        name: "engineerEmail",
+      },
+      {
+        type: "input",
+        message: "What is your engineers github username?",
+        name: "engineerGithub",
+      },
+    ])
+    .then((data) => {
+      var newEngineer = new Engineer(
+        data.engineerName,
+        data.engineerId,
+        data.engineerEmail,
+        data.engineerGithub
+      );
+      employees.push(newEngineer);
+      createTeam();
+    });
+}
 
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
+function createIntern() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is your interns name?",
+        name: "internName",
+      },
+      {
+        type: "input",
+        message: "What is your interns id number?",
+        name: "internId",
+      },
+      {
+        type: "input",
+        message: "What is your interns email address?",
+        name: "internEmail",
+      },
+      {
+        type: "input",
+        message: "Where does your intern attend school?",
+        name: "internSchool",
+      },
+    ])
+    .then((data) => {
+      var newIntern = new Intern(
+        data.internName,
+        data.internId,
+        data.internEmail,
+        data.internSchool
+      );
+      employees.push(newIntern);
+      createTeam();
+    });
+}
 
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
+function createTeam() {
+  inquirer
+    .prompt({
+      type: "list",
+      message: "What type of team member would you like to add?",
+      choices: ["engineer", "intern", "I am done."],
+      name: "teamChoice",
+    })
+    .then((data) => {
+      switch (data.teamChoice) {
+        case "engineer":
+          createEngineer();
+          break;
 
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
+        case "intern":
+          createIntern();
+          break;
+
+        default:
+          buildTeam();
+      }
+    });
+}
+
+function buildTeam() {
+  fs.mkdirSync(OUTPUT_DIR);
+  fs.writeFileSync(outputPath, render(employees), "utf-8");
+}
+
+createManager();
