@@ -36,6 +36,9 @@ To run test run the following command:
 npm test
 '''
 
+## How the deployed application looks and works
+![Deployed application](./assets/images/homework08_team_profile_generator.gif)
+
 ## Questions
 If you have any questions about the repo contact me directly at c.trahan94@yahoo.com.
 You can find more of my work at [ctrahan94](https://github.com/ctrahan94).
